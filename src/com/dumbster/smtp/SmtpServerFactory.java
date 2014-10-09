@@ -13,9 +13,7 @@ public class SmtpServerFactory {
 
     public static SmtpServer startServer(ServerOptions options) {
         SmtpServer server = wireUpServer(options);
-        wrapInShutdownHook(server);
         startServerThread(server);
-        System.out.println("Dumbster SMTP Server started on port " + options.port + ".\n");
         return server;
     }
 
@@ -25,16 +23,6 @@ public class SmtpServerFactory {
         server.setThreaded(options.threaded);
         server.setMailStore(options.mailStore);
         return server;
-    }
-
-    private static void wrapInShutdownHook(final SmtpServer server) {
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            public void run() {
-                server.stop();
-                System.out.println("\nDumbster SMTP Server stopped");
-                System.out.println("\tTotal messages received: " + server.getEmailCount());
-            }
-         });
     }
 
     private static void startServerThread(SmtpServer server) {
